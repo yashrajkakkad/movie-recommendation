@@ -186,8 +186,11 @@ def get_movies_cinestaan():
 
 if __name__ == "__main__":
     # read_movies()
-    get_movies_data()
+    # get_movies_data()
     # get_movies_imdb()
     # get_movies_tmdb()
     # get_movies_cinestaan()
-    # load_movies_data()
+    movies = load_movies_data()
+    for movie in movies:
+        print(movie.title)
+        print(type(movie))
