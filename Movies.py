@@ -133,8 +133,28 @@ def get_movies_imdb():
             f.write(movie)
 
 
+def get_movies_tmdb():
+    tmdb_url = 'https://www.themoviedb.org/movie'
+    pages = 5
+    movies = []
+    for i in range(1, pages + 1):
+        res = requests.get(tmdb_url, params={'page': i})
+        res.raise_for_status()
+        res = res.text
+        soup = BeautifulSoup(res, 'lxml')
+        a_html_list = soup.select('a[class="result"]')
+        for a_html in a_html_list:
+            movie = a_html.get('alt')
+            movies.append(movie)
+    with open(FILEPATH, 'w') as f:
+        for movie in movies:
+            print(movie)
+            f.write(movie)
+
+
 if __name__ == "__main__":
     # read_movies()
     # get_movies_data()
-    get_movies_imdb()
+    # get_movies_imdb()
+    get_movies_tmdb()
     # load_movies_data()
