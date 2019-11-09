@@ -6,13 +6,15 @@ from bs4 import BeautifulSoup
 
 DATAPATH = 'ml-latest-small/movies.csv'
 FILEPATH = 'movies.txt'
-APIKEY = 'aa03d634'
+APIKEY = '6fce15a'
+APIKEYS = ['aa03d634', 'd126d65e', '8e43ce79', '6fce15a']
 
 
 class Movie:
-    def __init__(self, title, people):
+    def __init__(self, title, people, genres):
         self.title = title
         self.people = people
+        self.genres = genres
 
 
 def read_movies_dataset():
@@ -95,7 +97,12 @@ def get_movies_data():
             if actor not in people:
                 people.append(actor)
         print(people)
-        movie_obj = Movie(movie, people)
+        genres = json_response['Genre']
+        genres = genres.split(',')
+        for i in range(len(genres)):
+            genres[i] = genres[i].strip()
+        print(genres)
+        movie_obj = Movie(movie, people, genres)
         with open("movies.pickle", "ab") as f:
             pickle.dump(movie_obj, f)
 
@@ -179,8 +186,8 @@ def get_movies_cinestaan():
 
 if __name__ == "__main__":
     # read_movies()
-    # get_movies_data()
+    get_movies_data()
     # get_movies_imdb()
     # get_movies_tmdb()
-    get_movies_cinestaan()
+    # get_movies_cinestaan()
     # load_movies_data()
