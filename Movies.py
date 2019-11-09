@@ -2,6 +2,7 @@ import csv
 import requests
 import re
 import pickle
+from bs4 import BeautifulSoup
 
 DATAPATH = 'ml-latest-small/movies.csv'
 FILEPATH = 'movies.txt'
@@ -14,7 +15,7 @@ class Movie:
         self.people = people
 
 
-def read_movies():
+def read_movies_dataset():
     with open(DATAPATH, 'r') as fr, open(FILEPATH, 'w') as fw:
         data = csv.reader(fr)
         for row in data:
@@ -113,7 +114,27 @@ def load_movies_data():
     return movies
 
 
+def get_movies_imdb():
+    imdb_url = 'https://www.imdb.com/list/ls063540474/?sort=list_order,asc&st_dt=&mode=detail'
+    pages = 158
+    movies = []
+    for i in range(1, pages + 1):
+        res = requests.get(imdb_url, params={'page': i})
+        res.raise_for_status()
+        res = res.text
+        soup = BeautifulSoup(res, 'lxml')
+        img_html_list = soup.select('img[class="loadlate"]')
+        for img_html in img_html_list:
+            movie = img_html.get('alt')
+            movies.append(movie)
+    with open(FILEPATH, 'w') as f:
+        for movie in movies:
+            print(movie)
+            f.write(movie)
+
+
 if __name__ == "__main__":
     # read_movies()
-    get_movies_data()
+    # get_movies_data()
+    get_movies_imdb()
     # load_movies_data()
