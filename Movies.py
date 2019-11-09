@@ -131,11 +131,12 @@ def get_movies_imdb():
         for movie in movies:
             print(movie)
             f.write(movie)
+            f.write('\n')
 
 
 def get_movies_tmdb():
     tmdb_url = 'https://www.themoviedb.org/movie'
-    pages = 5
+    pages = 500
     movies = []
     for i in range(1, pages + 1):
         res = requests.get(tmdb_url, params={'page': i})
@@ -150,11 +151,36 @@ def get_movies_tmdb():
         for movie in movies:
             print(movie)
             f.write(movie)
+            f.write('\n')
+
+
+def get_movies_cinestaan():
+    pages = 2
+    movies = []
+    for i in range(1, pages + 1):
+        url = 'https://www.cinestaan.com/movies/hindi/released/latest/{}/10000'.format(i)
+        res = requests.get(url)
+        print(url)
+        res.raise_for_status()
+        res = res.text
+        soup = BeautifulSoup(res, 'lxml')
+        a_html_list = soup.select('a[property="name"]')
+        for a_html in a_html_list:
+            movie = a_html.text
+            movie = movie.split('\n')[0]
+            movie = movie.rsplit(' ', 1)[0].strip()
+            movies.append(movie)
+    with open(FILEPATH, 'w') as f:
+        for movie in movies:
+            print(movie)
+            f.write(movie)
+            f.write('\n')
 
 
 if __name__ == "__main__":
     # read_movies()
     # get_movies_data()
     # get_movies_imdb()
-    get_movies_tmdb()
+    # get_movies_tmdb()
+    get_movies_cinestaan()
     # load_movies_data()
