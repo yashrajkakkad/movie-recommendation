@@ -27,23 +27,29 @@ def load_graph():
     return graph
 
 
-# def find_parent(node, graph, parent):
-#     if parent[node]:
-#         return find_parent(parent[node], graph, parent)
-#     else:
-#         return node
+def make_set(node, parent, size):
+    parent[node] = node
+    size[node] = 1
 
 
-# def disjoint_set_union(node_1, node_2, graph, parent, size):
-#     node_1 = find_parent(node_1, graph, parent)
-#     node_2 = find_parent(node_2, graph, parent)
-#     if node_1 != node_2:
-#         if size[node_1] < size[node_2]:
-#             temp = node_1
-#             node_1 = node_2
-#             node_2 = temp
-#         parent[node_2] = node_1
-#         size[node_2] += size[node_1]
+def find_parent(node, parent):
+    if node == parent[node]:
+        return node
+    print(node, parent[node])
+    parent[node] = find_parent(parent[node], parent)
+    return parent[node]
+
+
+def union_sets(node1, node2, parent, size):
+    node1 = find_parent(node1, parent)
+    node2 = find_parent(node2, parent)
+    if node1 != node2:
+        if size[node1] < size[node2]:
+            temp = node1
+            node1 = node2
+            node2 = temp
+        parent[node2] = node1
+        size[node2] += size[node1]
 
 
 def union_colors(graph, nodes):
@@ -52,52 +58,72 @@ def union_colors(graph, nodes):
     visited = {}
     queue = []
     parent = {}
-    # size = {}
+    size = {}
+    color_parent = {}
     # Mark each initial node with a different color
+    count = 10000
     n_colors = len(nodes)
     for i, node in enumerate(nodes):
-        colors[node] = i
-        queue.append(node)  # Enqueue all initial nodes
-        # visited[node] = True
-        parent[node] = node
-        # size[node] = 1
+        colors[node] = i + 1
+        # queue.append(node)  # Enqueue all initial nodes
+        parent[node] = None
+        make_set(i + 1, color_parent, size)  # Initialize the set of that particular color
+    for node in nodes:
+        for neighbour in graph[node]:
+            parent[neighbour] = node
+            queue.append(neighbour)
     # Keep merging until only one color remains
-    while n_colors != 1:
-        print(queue)
+    print(n_colors)
+    while n_colors != 1 and count:
+        count -= 1
+        print(n_colors)
+        print(len(queue))
+        # print(queue)
         node = queue.pop(0)  # Dequeue a node and visit it
         visited[node] = True
         color = None
         try:
-            color = colors[node]
+            color = find_parent(colors[node], color_parent)
         except KeyError:
-            colors[node] = colors[parent[node]]  # If it is yet to be colored
-        if color:  # If it is already colored, merge two colors to one
-            parent_color = colors[parent[node]]
-            while parent[node] != node:
-                colors[node] = parent_color
-                node = parent[node]
-            n_colors -= 1
+            print("Node:", node)
+            print(" parent:", parent[node])
+            colors[node] = find_parent(colors[parent[node]], color_parent)  # If it is yet to be colored
+        print(node, parent[node])
+        if color and parent[node]:  # If it is already colored (and has a parent), merge two colors to one
+            print("In")
+            print(color, colors[parent[node]])
+            if find_parent(color, color_parent) != find_parent(colors[parent[node]], color_parent):
+                union_sets(color, colors[parent[node]], color_parent, size)
+                n_colors -= 1
+        # parent_color = colors[parent[node]]
+        # while parent[node] != node:
+        #     colors[node] = parent_color
+        #     node = parent[node]
         # Add the neighbours of the visited queue which are yet to be visited to the queue
         for neighbour in graph[node]:
             try:
-                did_visit = visited[neighbour]
+                _ = visited[neighbour]
             except KeyError:
                 queue.append(neighbour)
                 parent[neighbour] = node
-    new_queue = queue
-    for node in queue:  # Return the current and next required number of nodes as a result
-        for neighbour in graph[node]:
-            try:
-                did_visit = visited[neighbour]
-            except KeyError:
-                new_queue.append(neighbour)
-                parent[neighbour] = node
-    queue = new_queue
+    # new_queue = queue
+    # for node in queue:  # Return the current and next required number of nodes as a result
+    #     for neighbour in graph[node]:
+    #         try:
+    #             did_visit = visited[neighbour]
+    #         except KeyError:
+    #             new_queue.append(neighbour)
+    #             parent[neighbour] = node
+    # queue = new_queue
     print(queue)
     print(colors)
+    return queue
 
 
 if __name__ == "__main__":
     graph = create_graph()
     nodes = ['Comedy', 'Bajirao Mastani', 'Sanjay Leela Bhansali', 'Badlapur', 'Dozakh in Search of Heaven']
-    union_colors(graph, nodes)
+    queue = union_colors(graph, nodes)
+    print("Final answer: ")
+    print(len(queue))
+    print(queue)
