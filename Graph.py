@@ -71,13 +71,14 @@ def union_colors(graph, nodes):
     for node in nodes:
         for neighbour in graph[node]:
             parent[neighbour] = node
-            queue.append(neighbour)
+            if neighbour not in queue:
+                queue.append(neighbour)
     # Keep merging until only one color remains
-    print(n_colors)
+    # print(n_colors)
     while n_colors != 1 and count:
         count -= 1
-        print(n_colors)
-        print(len(queue))
+        # print(n_colors)
+        # print(len(queue))
         # print(queue)
         node = queue.pop(0)  # Dequeue a node and visit it
         visited[node] = True
@@ -85,13 +86,13 @@ def union_colors(graph, nodes):
         try:
             color = find_parent(colors[node], color_parent)
         except KeyError:
-            print("Node:", node)
-            print(" parent:", parent[node])
+            # print("Node:", node)
+            # print(" parent:", parent[node])
             colors[node] = find_parent(colors[parent[node]], color_parent)  # If it is yet to be colored
         print(node, parent[node])
         if color and parent[node]:  # If it is already colored (and has a parent), merge two colors to one
-            print("In")
-            print(color, colors[parent[node]])
+            # print("In")
+            # print(color, colors[parent[node]])
             if find_parent(color, color_parent) != find_parent(colors[parent[node]], color_parent):
                 union_sets(color, colors[parent[node]], color_parent, size)
                 n_colors -= 1
@@ -104,7 +105,8 @@ def union_colors(graph, nodes):
             try:
                 _ = visited[neighbour]
             except KeyError:
-                queue.append(neighbour)
+                if neighbour not in queue:
+                    queue.append(neighbour)
                 parent[neighbour] = node
     # new_queue = queue
     # for node in queue:  # Return the current and next required number of nodes as a result
@@ -115,8 +117,8 @@ def union_colors(graph, nodes):
     #             new_queue.append(neighbour)
     #             parent[neighbour] = node
     # queue = new_queue
-    print(queue)
-    print(colors)
+    # print(queue)
+    # print(colors)
     return queue
 
 
@@ -126,4 +128,5 @@ if __name__ == "__main__":
     queue = union_colors(graph, nodes)
     print("Final answer: ")
     print(len(queue))
-    print(queue)
+    print(queue[:50])
+    # print(queue)
