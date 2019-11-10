@@ -193,4 +193,6 @@ if __name__ == "__main__":
     movies = load_movies_data()
     for movie in movies:
         print(movie.title)
+        print(movie.genres)
+        print(movie.people)
         print(type(movie))
