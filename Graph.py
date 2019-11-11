@@ -1,12 +1,16 @@
 from Movies import load_movies_data, Movie
 import pickle
+from operator import itemgetter
+from collections import OrderedDict
 
 
-def create_graph():
+def create_graph(mode):
     graph = {}
+    movie_titles = []
     movies = load_movies_data()
     for movie in movies:
         nodes = [movie.title]
+        movie_titles.append(movie.title)
         nodes.extend(movie.people)
         nodes.extend(movie.genres)
         for node in nodes:
@@ -18,7 +22,10 @@ def create_graph():
                         graph[node] = [nodes[i]]
     with open('Graph.pickle', 'wb') as f:
         pickle.dump(graph, f)
-    return graph
+    if mode is 1:
+        return graph
+    else:
+        return movie_titles
 
 
 def load_graph():
@@ -67,7 +74,8 @@ def union_colors(graph, nodes):
         colors[node] = i + 1
         # queue.append(node)  # Enqueue all initial nodes
         parent[node] = None
-        make_set(i + 1, color_parent, size)  # Initialize the set of that particular color
+        # Initialize the set of that particular color
+        make_set(i + 1, color_parent, size)
     for node in nodes:
         for neighbour in graph[node]:
             parent[neighbour] = node
@@ -88,9 +96,11 @@ def union_colors(graph, nodes):
         except KeyError:
             # print("Node:", node)
             # print(" parent:", parent[node])
-            colors[node] = find_parent(colors[parent[node]], color_parent)  # If it is yet to be colored
+            # If it is yet to be colored
+            colors[node] = find_parent(colors[parent[node]], color_parent)
         print(node, parent[node])
-        if color and parent[node]:  # If it is already colored (and has a parent), merge two colors to one
+        # If it is already colored (and has a parent), merge two colors to one
+        if color and parent[node]:
             # print("In")
             # print(color, colors[parent[node]])
             if find_parent(color, color_parent) != find_parent(colors[parent[node]], color_parent):
@@ -122,11 +132,73 @@ def union_colors(graph, nodes):
     return queue
 
 
-if __name__ == "__main__":
-    graph = create_graph()
-    nodes = ['Comedy', 'Bajirao Mastani', 'Sanjay Leela Bhansali', 'Badlapur', 'Dozakh in Search of Heaven']
-    queue = union_colors(graph, nodes)
-    print("Final answer: ")
-    print(len(queue))
-    print(queue[:50])
+def energy_spread(graph, nodes):
+    # Init variables
+    energy_values = {}  # Energies of initial nodes
+    neighbor_energy_values = {}  # Energies of neighbors of initial nodes
+    visited = {}
+    queue = []
+    parent = {}
+    movie_titles = create_graph(0)
+    for node in nodes:
+        energy_values[node] = 5000*len(nodes)  # Assign arbitrary energy values
+        queue.append(node)  # Enqueue initial nodes
+        parent[node] = node
+    for i in range(len(nodes)):
+        # print(queue)
+        node = queue.pop(0)
+        visited[node] = True
+        if node is 'Comedy':
+            print(graph[node])
+        for neighbor in graph[node]:
+            energy_value = None
+            try:
+                did_visit = visited[neighbor]
+            except KeyError:
+                if neighbor not in queue:
+                    queue.append(neighbor)
+                parent[neighbor] = node
+                try:  # Add new energy value if already exists
+                    energy_value = neighbor_energy_values[neighbor]
+                    neighbor_energy_values[neighbor] = energy_value + \
+                        (energy_values[parent[node]]/len(graph[node]))
+                except KeyError:
+                    neighbor_energy_values[neighbor] = (
+                        energy_values[parent[node]]/len(graph[node]))
+    final_energy_values = {}  # Energy values of neighbor movies
     # print(queue)
+    for node in queue:
+        for neighbor in graph[node]:
+            energy_value = None
+            if neighbor in movie_titles:
+                try:  # Add new energy value if already exists
+                    energy_value = final_energy_values[neighbor]
+                    final_energy_values[neighbor] = energy_value + \
+                        (neighbor_energy_values[node]/len(graph[node]))
+                except KeyError:
+                    final_energy_values[neighbor] = neighbor_energy_values[node] / \
+                        len(graph[node])
+    sorted_values = OrderedDict(sorted(final_energy_values.items(),  # Sort using OrderedDict to maintain order
+                                       key=itemgetter(1)))
+    for node in nodes:
+        deleted_pair = sorted_values.pop(node, None)
+    return sorted_values
+
+
+if __name__ == "__main__":
+    graph = create_graph(1)
+    nodes = ['Grand Masti', 'Dhoom 3',
+             'Chennai Express']
+    # nodes = ['Bajirao Mastani', 'Padmaavat']
+    print("Final answer: ")
+    queue = union_colors(graph, nodes)
+    # print(len(queue))
+    print(queue)
+    # results = energy_spread(graph, nodes)
+    # print(results)
+    # movies_queue = []
+    # for key in results.keys():
+    #     for neighbor in graph[key]:
+    #         if neighbor is 'Drama':
+    #             movies_queue.append(key)
+    # print(movies_queue)
