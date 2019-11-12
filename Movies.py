@@ -121,6 +121,18 @@ def load_movies_data():
     return movies
 
 
+def load_movie_titles():
+    titles = []
+    with open("movies.pickle", "rb") as f:
+        while True:
+            try:
+                movie = pickle.load(f)
+                titles.append(movie.title)
+            except EOFError:
+                break
+    return titles
+
+
 def get_movies_imdb():
     imdb_url = 'https://www.imdb.com/list/ls063540474/?sort=list_order,asc&st_dt=&mode=detail'
     pages = 158
@@ -165,7 +177,8 @@ def get_movies_cinestaan():
     pages = 2
     movies = []
     for i in range(1, pages + 1):
-        url = 'https://www.cinestaan.com/movies/hindi/released/latest/{}/10000'.format(i)
+        url = 'https://www.cinestaan.com/movies/hindi/released/latest/{}/10000'.format(
+            i)
         res = requests.get(url)
         print(url)
         res.raise_for_status()

@@ -1,10 +1,10 @@
-from Movies import load_movies_data, Movie
+from Movies import load_movies_data, load_movie_titles, Movie
 import pickle
 from operator import itemgetter
 from collections import OrderedDict
 
 
-def create_graph(mode):
+def create_graph():
     graph = {}
     movie_titles = []
     movies = load_movies_data()
@@ -22,10 +22,7 @@ def create_graph(mode):
                         graph[node] = [nodes[i]]
     with open('Graph.pickle', 'wb') as f:
         pickle.dump(graph, f)
-    if mode is 1:
-        return graph
-    else:
-        return movie_titles
+    return graph
 
 
 def load_graph():
@@ -139,7 +136,7 @@ def energy_spread(graph, nodes):
     visited = {}
     queue = []
     parent = {}
-    movie_titles = create_graph(0)
+    movie_titles = load_movie_titles()
     for node in nodes:
         energy_values[node] = 5000*len(nodes)  # Assign arbitrary energy values
         queue.append(node)  # Enqueue initial nodes
@@ -186,16 +183,16 @@ def energy_spread(graph, nodes):
 
 
 if __name__ == "__main__":
-    graph = create_graph(1)
+    graph = create_graph()
     nodes = ['Grand Masti', 'Dhoom 3',
              'Chennai Express']
     # nodes = ['Bajirao Mastani', 'Padmaavat']
     print("Final answer: ")
-    queue = union_colors(graph, nodes)
+    # queue = union_colors(graph, nodes)
     # print(len(queue))
-    print(queue)
-    # results = energy_spread(graph, nodes)
-    # print(results)
+    # print(queue)
+    results = energy_spread(graph, nodes)
+    print(results)
     # movies_queue = []
     # for key in results.keys():
     #     for neighbor in graph[key]:
