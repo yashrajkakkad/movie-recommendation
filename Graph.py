@@ -39,7 +39,6 @@ def make_set(node, parent, size):
 def find_parent(node, parent):
     if node == parent[node]:
         return node
-    print(node, parent[node])
     parent[node] = find_parent(parent[node], parent)
     return parent[node]
 
@@ -65,7 +64,7 @@ def union_colors(graph, nodes):
     size = {}
     color_parent = {}
     # Mark each initial node with a different color
-    count = 10000
+    # count = 10000
     n_colors = len(nodes)
     for i, node in enumerate(nodes):
         colors[node] = i + 1
@@ -81,8 +80,7 @@ def union_colors(graph, nodes):
             #     queue.append(neighbour)
     # Keep merging until only one color remains
     # print(n_colors)
-    while n_colors != 1 and count:
-        count -= 1
+    while n_colors != 1:
         # print(n_colors)
         # print(len(queue))
         # print(queue)
@@ -147,8 +145,8 @@ def energy_spread(graph, nodes):
         # print(queue)
         node = queue.pop(0)
         visited[node] = True
-        if node is 'Comedy':
-            print(graph[node])
+        # if node is 'Comedy':
+        #     print(graph[node])
         for neighbor in graph[node]:
             energy_value = None
             try:
@@ -160,10 +158,10 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = neighbor_energy_values[neighbor]
                     neighbor_energy_values[neighbor] = energy_value + \
-                        (energy_values[parent[node]] / len(graph[node]))
+                                                       (energy_values[parent[node]] / len(graph[node]))
                 except KeyError:
                     neighbor_energy_values[neighbor] = (
-                        energy_values[parent[node]] / len(graph[node]))
+                            energy_values[parent[node]] / len(graph[node]))
     final_energy_values = {}  # Energy values of neighbor movies
     # print(queue)
     for node in queue:
@@ -173,10 +171,10 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = final_energy_values[neighbor]
                     final_energy_values[neighbor] = energy_value + \
-                        (neighbor_energy_values[node] / len(graph[node]))
+                                                    (neighbor_energy_values[node] / len(graph[node]))
                 except KeyError:
                     final_energy_values[neighbor] = neighbor_energy_values[node] / \
-                        len(graph[node])
+                                                    len(graph[node])
     sorted_values = OrderedDict(sorted(final_energy_values.items(),  # Sort using OrderedDict to maintain order
                                        key=itemgetter(1)))
     for node in nodes:
@@ -188,14 +186,31 @@ if __name__ == "__main__":
     graph = create_graph()
     # nodes = ['Kalank', 'Gully Boy',
     #          'Chennai Express']
-    nodes = ['Bajirao Mastani', 'Padmaavat', 'Kalank',
-             'Sanjay Leela Bhansali', 'Deepika Padukone']
-    print("Final answer: ")
-    # queue = union_colors(graph, nodes)
+    nodes = ['Sanjay Leela Bhansali', 'Deepika Padukone']
+    # nodes = ['Akshay Kumar', 'Comedy']
+    # nodes = ['Hate Story 2', 'Hate Story 3']
+    # nodes = ['3 Idiots', 'Ghajini', 'Fanaa']
+    print("Results using union colors: ")
+    queue = union_colors(graph, nodes)
+    movies = load_movie_titles()
+    count = 0
+    for node, parent in queue:
+        if node in movies:
+            print(node)
+        count += 1
+        if count >= 5:
+            break
     # print(len(queue))
     # print(queue)
     results = energy_spread(graph, nodes)
-    print(results)
+    print("\n\nResults using energy spreading: ")
+    # print(reversed(results))
+    count = 0
+    for node, energy in reversed(results.items()):
+        print(node)
+        count += 1
+        if count >= 5:
+            break
     # movies_queue = []
     # for key in results.keys():
     #     for neighbor in graph[key]:

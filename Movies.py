@@ -5,9 +5,9 @@ import pickle
 from bs4 import BeautifulSoup
 
 DATAPATH = 'ml-latest-small/movies.csv'
-FILEPATH = 'movies.txt'
-APIKEY = 'aa03d634'
-APIKEYS = ['aa03d634', 'd126d65e', '8e43ce79', '6fce15a']
+FILEPATH = 'imdb_movies.txt'
+APIKEY = 'c98acb7f'
+APIKEYS = ['aa03d634', 'd126d65e', '8e43ce79', '6fce15a', 'efab5d4d', 'c98acb7f']
 
 
 class Movie:
@@ -48,10 +48,18 @@ def get_movies_data():
     regex = re.compile(r'(.*)?\(.*?\)')
     movies_obj = load_movies_data()
     movie_titles = [movie.title for movie in movies_obj]
+    exit = False
+    left_movies = []
     for movie in movies:
+        if exit:
+            left_movies.append(movie)
+            continue
         response = requests.get('http://www.omdbapi.com',
                                 params={'apikey': APIKEY, 't': movie})
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except Exception:
+            exit = True
         print(movie)
         # print(response.content)
         json_response = response.json()
@@ -105,6 +113,11 @@ def get_movies_data():
         movie_obj = Movie(movie, people, genres)
         with open("movies.pickle", "ab") as f:
             pickle.dump(movie_obj, f)
+    if exit:
+        with open(FILEPATH, 'w') as f:
+            for movie in left_movies:
+                f.write(movie)
+                f.write('\n')
 
 
 def load_movies_data():
@@ -135,7 +148,7 @@ def load_movie_titles():
 
 def get_movies_imdb():
     imdb_url = 'https://www.imdb.com/list/ls063540474/?sort=list_order,asc&st_dt=&mode=detail'
-    pages = 158
+    pages = 2
     movies = []
     for i in range(1, pages + 1):
         res = requests.get(imdb_url, params={'page': i})
