@@ -74,8 +74,9 @@ def union_colors(graph, nodes):
         make_set(i + 1, color_parent, size)
     for node in nodes:
         for neighbour in graph[node]:
-            parent[neighbour] = node
-            queue.append((neighbour, node))
+            if neighbour not in nodes:
+                parent[neighbour] = node
+                queue.append((neighbour, node))
             # if neighbour not in queue:
             #     queue.append(neighbour)
     # Keep merging until only one color remains
@@ -83,7 +84,7 @@ def union_colors(graph, nodes):
     while n_colors != 1:
         # print(n_colors)
         # print(len(queue))
-        # print(queue)
+        print(queue)
         node, parent_node = queue.pop(0)  # Dequeue a node and visit it
         visited[node] = True
         color = None
@@ -96,10 +97,10 @@ def union_colors(graph, nodes):
             colors[node] = find_parent(colors[parent_node], color_parent)
         # print(node, parent[node])
         # If it is already colored (and has a parent), merge two colors to one
-        if color and parent_node:
+        if color:
             # print("In")
             # print(color, colors[parent[node]])
-            if find_parent(color, color_parent) != find_parent(colors[parent_node], color_parent):
+            if color != find_parent(colors[parent_node], color_parent):
                 union_sets(color, colors[parent_node], color_parent, size)
                 n_colors -= 1
         # parent_color = colors[parent[node]]
@@ -197,9 +198,9 @@ if __name__ == "__main__":
     for node, parent in queue:
         if node in movies:
             print(node)
-        count += 1
-        if count >= 5:
-            break
+            count += 1
+            if count >= 5:
+                break
     # print(len(queue))
     # print(queue)
     results = energy_spread(graph, nodes)
