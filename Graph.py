@@ -89,21 +89,30 @@ def union_colors(graph, nodes):
                 queue.append((neighbour, node))
     # Keep merging until only one color remains
 
-    # UNDER CONSTRUCTION
+    # UNDER REVIEW. Need better results
     if n_colors == 1:
         i = 3
+        new_queue = []
         while i != 0:
             while len(queue) != 0:
                 node, parent_node = queue.pop(0)
                 visited[node] = True
                 for neighbour in graph[node]:
                     try:
-                        _ = visited[node]
+                        _ = visited[neighbour]
                     except KeyError:
-                        queue.append(neighbour, node)
+                        new_queue.append((neighbour, node))
                         parent[neighbour] = node
             i -= 1
-        return queue
+            for node, parent_node in new_queue:
+                queue.append((node, parent_node))
+        for node, parent_node in queue:
+            if node == nodes[0]:
+                pass
+            else:
+                color_ord[last_united].append(node)
+        results = list(dict.fromkeys(color_ord[last_united][1:]))
+        return results
 
     while n_colors != 1:
         node, parent_node = queue.pop(0)  # Dequeue a node and visit it
@@ -210,25 +219,16 @@ if __name__ == "__main__":
     # nodes = ['Sanjay Leela Bhansali', 'Deepika Padukone']
     # nodes = ['Akshay Kumar', 'Comedy']
     nodes = ['Chennai Express']
-    print("Results using union colors: ")
 
     color_ord = union_colors(graph, nodes)
-    print(color_ord)
+    print("Results using union colors: ")
     count = 0
-    if len(nodes) is 1:
-        for node, parent in color_ord:
-            if node in movies:
-                print(node)
-                count += 1
-                if count >= 5:
-                    break
-    else:
-        for node in color_ord:
-            if node in movies:
-                print(node)
-                count += 1
-                if count >= 5:
-                    break
+    for node in color_ord:
+        if node in movies:
+            print(node)
+            count += 1
+            if count >= 5:
+                break
 
     results = energy_spread(graph, nodes)
     print("\n\nResults using energy spreading: ")
