@@ -46,13 +46,18 @@ def find_parent(node, parent):
 def union_sets(node1, node2, parent, size):
     node1 = find_parent(node1, parent)
     node2 = find_parent(node2, parent)
+    parent_node = None
     if node1 != node2:
-        if size[node1] < size[node2]:
+        if size[node1] <= size[node2]:
             temp = node1
             node1 = node2
             node2 = temp
+            parent_node = node2
+        else:
+            parent_node = node1
         parent[node2] = node1
         size[node2] += size[node1]
+    return parent_node
 
 
 def union_colors(graph, nodes):
@@ -63,11 +68,16 @@ def union_colors(graph, nodes):
     parent = {}
     size = {}
     color_parent = {}
+    last_united = 1
     # Mark each initial node with a different color
     # count = 10000
     n_colors = len(nodes)
+    color_ord = []
+    for i in range(n_colors + 1):
+        color_ord.append([])
     for i, node in enumerate(nodes):
         colors[node] = i + 1
+        color_ord[colors[node]].append(node)
         # queue.append(node)  # Enqueue all initial nodes
         parent[node] = None
         # Initialize the set of that particular color
@@ -77,36 +87,49 @@ def union_colors(graph, nodes):
             if neighbour not in nodes:
                 parent[neighbour] = node
                 queue.append((neighbour, node))
-            # if neighbour not in queue:
-            #     queue.append(neighbour)
     # Keep merging until only one color remains
-    # print(n_colors)
+
+    # UNDER CONSTRUCTION
+    if n_colors == 1:
+        i = 3
+        while i != 0:
+            while len(queue) != 0:
+                node, parent_node = queue.pop(0)
+                visited[node] = True
+                for neighbour in graph[node]:
+                    try:
+                        _ = visited[node]
+                    except KeyError:
+                        queue.append(neighbour, node)
+                        parent[neighbour] = node
+            i -= 1
+        return queue
+
     while n_colors != 1:
-        # print(n_colors)
-        # print(len(queue))
-        print(queue)
         node, parent_node = queue.pop(0)  # Dequeue a node and visit it
         visited[node] = True
         color = None
         try:
             color = find_parent(colors[node], color_parent)
         except KeyError:
-            # print("Node:", node)
-            # print(" parent:", parent[node])
             # If it is yet to be colored
             colors[node] = find_parent(colors[parent_node], color_parent)
-        # print(node, parent[node])
+            color_ord[colors[node]].append(node)
+            size[colors[node]] += 1
         # If it is already colored (and has a parent), merge two colors to one
         if color:
-            # print("In")
-            # print(color, colors[parent[node]])
             if color != find_parent(colors[parent_node], color_parent):
-                union_sets(color, colors[parent_node], color_parent, size)
+                # print(node, color, parent_node, colors[parent_node])
+                color_parent_node = union_sets(
+                    color, colors[parent_node], color_parent, size)
+                if color_parent_node:
+                    last_united = color_parent_node
+                    if color_parent_node == colors[node]:
+                        other_node = parent_node
+                    else:
+                        other_node = node
+                    color_ord[color_parent_node].append(other_node)
                 n_colors -= 1
-        # parent_color = colors[parent[node]]
-        # while parent[node] != node:
-        #     colors[node] = parent_color
-        #     node = parent[node]
         # Add the neighbours of the visited queue which are yet to be visited to the queue
         for neighbour in graph[node]:
             try:
@@ -115,18 +138,17 @@ def union_colors(graph, nodes):
                 # if neighbour not in queue:
                 queue.append((neighbour, node))
                 parent[neighbour] = node
-    # new_queue = queue
-    # for node in queue:  # Return the current and next required number of nodes as a result
-    #     for neighbour in graph[node]:
-    #         try:
-    #             did_visit = visited[neighbour]
-    #         except KeyError:
-    #             new_queue.append(neighbour)
-    #             parent[neighbour] = node
-    # queue = new_queue
-    # print(queue)
-    # print(colors)
-    return queue
+    for node in queue:
+        try:
+            _ = visited[node]
+        except KeyError:
+            try:
+                color = find_parent(parent[node], color_parent)
+                color_ord[color].append(node)
+            except KeyError:
+                pass
+            # color_ord[find_parent(parent[node], color_parent)].append(node)
+    return color_ord[last_united]
 
 
 def energy_spread(graph, nodes):
@@ -146,8 +168,6 @@ def energy_spread(graph, nodes):
         # print(queue)
         node = queue.pop(0)
         visited[node] = True
-        # if node is 'Comedy':
-        #     print(graph[node])
         for neighbor in graph[node]:
             energy_value = None
             try:
@@ -159,12 +179,11 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = neighbor_energy_values[neighbor]
                     neighbor_energy_values[neighbor] = energy_value + \
-                                                       (energy_values[parent[node]] / len(graph[node]))
+                        (energy_values[parent[node]] / len(graph[node]))
                 except KeyError:
                     neighbor_energy_values[neighbor] = (
-                            energy_values[parent[node]] / len(graph[node]))
+                        energy_values[parent[node]] / len(graph[node]))
     final_energy_values = {}  # Energy values of neighbor movies
-    # print(queue)
     for node in queue:
         for neighbor in graph[node]:
             energy_value = None
@@ -172,10 +191,10 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = final_energy_values[neighbor]
                     final_energy_values[neighbor] = energy_value + \
-                                                    (neighbor_energy_values[node] / len(graph[node]))
+                        (neighbor_energy_values[node] / len(graph[node]))
                 except KeyError:
                     final_energy_values[neighbor] = neighbor_energy_values[node] / \
-                                                    len(graph[node])
+                        len(graph[node])
     sorted_values = OrderedDict(sorted(final_energy_values.items(),  # Sort using OrderedDict to maintain order
                                        key=itemgetter(1)))
     for node in nodes:
@@ -185,36 +204,37 @@ def energy_spread(graph, nodes):
 
 if __name__ == "__main__":
     graph = create_graph()
+    movies = load_movie_titles()
     # nodes = ['Kalank', 'Gully Boy',
     #          'Chennai Express']
-    nodes = ['Sanjay Leela Bhansali', 'Deepika Padukone']
+    # nodes = ['Sanjay Leela Bhansali', 'Deepika Padukone']
     # nodes = ['Akshay Kumar', 'Comedy']
-    # nodes = ['Hate Story 2', 'Hate Story 3']
-    # nodes = ['3 Idiots', 'Ghajini', 'Fanaa']
+    nodes = ['Chennai Express']
     print("Results using union colors: ")
-    queue = union_colors(graph, nodes)
-    movies = load_movie_titles()
+
+    color_ord = union_colors(graph, nodes)
+    print(color_ord)
     count = 0
-    for node, parent in queue:
-        if node in movies:
-            print(node)
-            count += 1
-            if count >= 5:
-                break
-    # print(len(queue))
-    # print(queue)
+    if len(nodes) is 1:
+        for node, parent in color_ord:
+            if node in movies:
+                print(node)
+                count += 1
+                if count >= 5:
+                    break
+    else:
+        for node in color_ord:
+            if node in movies:
+                print(node)
+                count += 1
+                if count >= 5:
+                    break
+
     results = energy_spread(graph, nodes)
     print("\n\nResults using energy spreading: ")
-    # print(reversed(results))
     count = 0
     for node, energy in reversed(results.items()):
         print(node)
         count += 1
         if count >= 5:
             break
-    # movies_queue = []
-    # for key in results.keys():
-    #     for neighbor in graph[key]:
-    #         if neighbor is 'Drama':
-    #             movies_queue.append(key)
-    # print(movies_queue)
