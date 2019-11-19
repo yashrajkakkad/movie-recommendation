@@ -1,6 +1,8 @@
 venv
 .vscode
 .idea
+utils/ml-latest
+utils/ml-latest-small
 ml-latest
 ml-latest-small
 __pycache__
