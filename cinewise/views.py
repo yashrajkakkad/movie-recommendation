@@ -1,25 +1,21 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from dal import autocomplete
-from .models import Movie, Person, Genre
-from itertools import chain
+from .models import Node
+from .forms import UserInputForm
 
 
 # Create your views here.
 def home(request):
-    return HttpResponse("Home page comes here!")
+    form = UserInputForm()
+    return render(request, 'cinewise/index.html', {'form': form})
+    # return HttpResponse("Home page comes here!")
 
 
-class MovieAutocomplete(autocomplete.Select2QuerySetView):
+class NodeAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         if not self.request.user.is_authenticated:
-            return Movie.objects.none()
-        movie_qs = Movie.objects.all()
-        person_qs = Person.objects.all()
-        genre_qs = Genre.objects.all()
-        qs = None
+            return Node.objects.none()
+        qs = Node.objects.all()
         if self.q:
-            movie_qs = movie_qs.filter(title__startswith=self.q)
-            person_qs = person_qs.filter(name__startswith=self.q)
-            genre_qs = genre_qs.filter(name__startswith=self.q)
-            qs = list(chain(movie_qs, person_qs, genre_qs))
+            qs = qs.filter(name__istartswith=self.q)
         return qs
