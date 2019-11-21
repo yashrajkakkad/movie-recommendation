@@ -20,3 +20,4 @@ class UserInputForm(forms.ModelForm):
     class Meta:
         model = UserInput
         fields = ('__all__')
+        attrs = {'data-html': True}

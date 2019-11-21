@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'jquery',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

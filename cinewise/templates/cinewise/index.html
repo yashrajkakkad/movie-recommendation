@@ -1,4 +1,6 @@
 {% load static %}
+{% load bootstrap4 %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,8 +16,11 @@
 <!--    <link src10="/static/collected/autocomplete_light/vendor/select2/dist/css/select2.css" type="text/css" media="all" rel="stylesheet" />-->
 <!--    <link src="/static/collected/autocomplete_light/select2.css" type="text/css" media="all" rel="stylesheet" />-->
 <!--<link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}"/>-->
-{% csrf_token %}
-{{form.as_p}}
+<form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons submit="Submit" %}{% endbuttons %}
+</form>
 <!--    <script type="text/javascript" src="http://dal-yourlabs.rhcloud.com/static/collected/admin/js/vendor/jquery/jquery.js"></script>-->
 <script type="text/javascript" src="{% static 'cinewise/js/jquery-3.4.1.js' %}"></script>
 {{form.media }}
