@@ -1,4 +1,4 @@
-from Movies import load_movies_data, load_movie_titles, Movie
+from utils.Movies import load_movies_data, load_movie_titles, Movie
 import pickle
 from operator import itemgetter
 from collections import OrderedDict
@@ -68,28 +68,29 @@ def union_colors(graph, nodes):
     parent = {}
     size = {}
     color_parent = {}
-    last_united = 1
-    # Mark each initial node with a different color
-    # count = 10000
+
+    last_united_color = 1  # The last united color being the first color by default
     n_colors = len(nodes)
-    color_ord = []
+
+    color_ord = []  # List of lists containing nodes of different colors
     for i in range(n_colors + 1):
         color_ord.append([])
+
+    # Mark each initial node with a different color
     for i, node in enumerate(nodes):
         colors[node] = i + 1
         color_ord[colors[node]].append(node)
-        # queue.append(node)  # Enqueue all initial nodes
         parent[node] = None
         # Initialize the set of that particular color
         make_set(i + 1, color_parent, size)
+
+    # Enqueue neighbours of initial nodes in the queue
     for node in nodes:
         for neighbour in graph[node]:
             if neighbour not in nodes:
                 parent[neighbour] = node
                 queue.append((neighbour, node))
-    # Keep merging until only one color remains
 
-    # UNDER REVIEW. Need better results
     if n_colors == 1:
         i = 3
         new_queue = []
@@ -110,8 +111,8 @@ def union_colors(graph, nodes):
             if node == nodes[0]:
                 pass
             else:
-                color_ord[last_united].append(node)
-        results = list(dict.fromkeys(color_ord[last_united][1:]))
+                color_ord[last_united_color].append(node)
+        results = list(dict.fromkeys(color_ord[last_united_color][1:]))
         return results
 
     while n_colors != 1:
@@ -132,7 +133,7 @@ def union_colors(graph, nodes):
                 color_parent_node = union_sets(
                     color, colors[parent_node], color_parent, size)
                 if color_parent_node:
-                    last_united = color_parent_node
+                    last_united_color = color_parent_node
                     if color_parent_node == colors[node]:
                         other_node = parent_node
                     else:
@@ -157,7 +158,7 @@ def union_colors(graph, nodes):
             except KeyError:
                 pass
             # color_ord[find_parent(parent[node], color_parent)].append(node)
-    return color_ord[last_united]
+    return color_ord[last_united_color]
 
 
 def energy_spread(graph, nodes):
@@ -211,21 +212,20 @@ def energy_spread(graph, nodes):
     return sorted_values
 
 
-if __name__ == "__main__":
+def gen_recommendations(nodes):
     graph = create_graph()
     movies = load_movie_titles()
-    # nodes = ['Kalank', 'Gully Boy',
-    #          'Chennai Express']
-    # nodes = ['Sanjay Leela Bhansali', 'Deepika Padukone']
-    # nodes = ['Akshay Kumar', 'Comedy']
-    nodes = ['Chennai Express']
+
+    count = 0
+    union_colors_results = []
+    energy_spread_results = []
 
     color_ord = union_colors(graph, nodes)
     print("Results using union colors: ")
-    count = 0
     for node in color_ord:
         if node in movies:
             print(node)
+            union_colors_results.append(node)
             count += 1
             if count >= 5:
                 break
@@ -235,6 +235,9 @@ if __name__ == "__main__":
     count = 0
     for node, energy in reversed(results.items()):
         print(node)
+        energy_spread_results.append(node)
         count += 1
         if count >= 5:
             break
+
+    return union_colors_results, energy_spread_results
