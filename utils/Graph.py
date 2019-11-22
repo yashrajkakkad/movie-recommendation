@@ -1,4 +1,4 @@
-from utils.Movies import load_movies_data, load_movie_titles, Movie
+from .Movies import load_movies_data, load_movie_titles, Movie
 import pickle
 from operator import itemgetter
 from collections import OrderedDict
@@ -213,7 +213,7 @@ def energy_spread(graph, nodes):
 
 
 def gen_recommendations(nodes):
-    graph = create_graph()
+    graph = load_graph()
     movies = load_movie_titles()
 
     count = 0

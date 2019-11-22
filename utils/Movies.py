@@ -121,7 +121,6 @@ def get_movies_data():
 
 
 def load_movies_data():
-    movies = []
     with open("movies.pickle", "rb") as f:
         while True:
             try:
@@ -134,16 +133,43 @@ def load_movies_data():
     return movies
 
 
+def movies_to_nodes():
+    movies = load_movies_data()
+    nodes = []
+    for movie in movies:
+        nodes.append(movie.title)
+        for person in movie.people:
+            if person not in nodes:
+                nodes.append(person)
+        for genre in movie.genres:
+            if genre not in nodes:
+                nodes.append(genre)
+    with open("nodes.pickle", "wb") as f:
+        pickle.dump(nodes, f)
+    # return nodes
+
+
+def load_nodes():
+    with open("nodes.pickle", "rb") as f:
+        nodes = pickle.load(f)
+    return nodes
+
+
 def load_movie_titles():
-    titles = []
-    with open("movies.pickle", "rb") as f:
-        while True:
-            try:
-                movie = pickle.load(f)
-                titles.append(movie.title)
-            except EOFError:
-                break
-    return titles
+    with open("imdb_movies.txt", "r") as f:
+        movies = f.read().split("\n")
+    for i in range(len(movies)):
+        movies[i] = movies[i].strip()
+    return movies
+    # titles = []
+    # with open("movies.pickle", "rb") as f:
+    #     while True:
+    #         try:
+    #             movie = pickle.load(f)
+    #             titles.append(movie.title)
+    #         except EOFError:
+    #             break
+    # return titles
 
 
 def get_movies_imdb():
@@ -211,8 +237,10 @@ def get_movies_cinestaan():
 
 
 if __name__ == "__main__":
+    pass
+    # movies_to_nodes()
     # read_movies()
-    get_movies_data()
+    # get_movies_data()
     # get_movies_imdb()
     # get_movies_tmdb()
     # get_movies_cinestaan()
