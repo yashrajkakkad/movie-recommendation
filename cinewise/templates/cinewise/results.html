@@ -9,6 +9,22 @@
     <title>Results</title>
 </head>
 <body>
-<p>Expect results here!</p>
+{#<p>Expect results here!</p>#}
+<h1>Union Colors: </h1>
+    <ul>
+        {% for result in union_colors_results %}
+            <li>
+                {{ result }}
+            </li>
+        {% endfor %}
+    </ul>
+<h1>Energy Spread: </h1>
+    <ul>
+        {% for result in energy_spread_results %}
+            <li>
+                {{ result }}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

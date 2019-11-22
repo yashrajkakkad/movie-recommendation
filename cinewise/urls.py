@@ -5,5 +5,5 @@ from .models import Node
 urlpatterns = [
     path('', views.home, name='home'),
     path('autocomplete/', views.NodeAutocomplete.as_view(model=Node), name="autocomplete"),
-    path('result/', views.result, name="result")
+    # path('result/', views.result, name="result")
 ]

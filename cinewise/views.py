@@ -32,10 +32,11 @@ def home(request):
         # else:
         #     print("Form is invalid")
         print("Redirecting!")
-        union_colors_results, energy_spreading_results = gen_recommendations(nodes)
+        union_colors_results, energy_spread_results = gen_recommendations(nodes)
         print(union_colors_results)
-        print(energy_spreading_results)
-        return redirect("result")
+        print(energy_spread_results)
+        return render(request, "cinewise/results.html",
+                      {"union_colors_results": union_colors_results, "energy_spread_results": energy_spread_results})
     else:
         form = UserInputForm()
         return render(request, 'cinewise/index.html', {'form': form})
@@ -54,6 +55,5 @@ class NodeAutocomplete(autocomplete.Select2QuerySetView):
     # def get_result_label(self, item):
     #     return format_html('{}', item.name)
 
-
-def result(request):
-    return render(request, "cinewise/results.html")
+# def result(request):
+#     return render(request, "cinewise/results.html")
