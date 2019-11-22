@@ -2,6 +2,9 @@ beautifulsoup4==4.8.1
 certifi==2019.9.11
 chardet==3.0.4
 Django==2.2.7
+django-autocomplete-light==3.4.1
+django-bootstrap4==1.0.1
+django-jquery==3.1.0
 idna==2.8
 joblib==0.14.0
 lxml==4.4.1
