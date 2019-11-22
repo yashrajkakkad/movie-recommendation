@@ -6,3 +6,4 @@ utils/ml-latest-small
 ml-latest
 ml-latest-small
 __pycache__
+*.pyc
