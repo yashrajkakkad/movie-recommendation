@@ -9,10 +9,11 @@ from utils.Graph import gen_recommendations
 # Create your views here.
 def home(request):
     if request.method == "POST":
-        print("Post request!")
-        # print(request.POST)
+        # print("Post request!")
+        # print(request.POST.get)
         form = UserInputForm(request.POST)
-        print(form)
+        print(form.errors)
+        print(form.is_valid())
         form_soup = BeautifulSoup(form.__str__(), 'lxml')
         selected_soup = form_soup.find_all('option', selected=True)
         print(selected_soup)
@@ -39,6 +40,7 @@ def home(request):
                       {"union_colors_results": union_colors_results, "energy_spread_results": energy_spread_results})
     else:
         form = UserInputForm()
+        print(form)
         return render(request, 'cinewise/index.html', {'form': form})
     # return HttpResponse("Home page comes here!")
 
@@ -49,7 +51,7 @@ class NodeAutocomplete(autocomplete.Select2QuerySetView):
             return Node.objects.none()
         qs = Node.objects.all()
         if self.q:
-            qs = qs.filter(name__istartswith=self.q)
+            qs = qs.filter(name__contains=self.q)
         return qs
 
     # def get_result_label(self, item):

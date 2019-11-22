@@ -1,4 +1,7 @@
 {% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,25 +9,49 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'cinewise/css/bootstrap.min.css' %}">
     <title>Results</title>
 </head>
 <body>
 {#<p>Expect results here!</p>#}
-<h1>Union Colors: </h1>
-    <ul>
-        {% for result in union_colors_results %}
-            <li>
-                {{ result }}
-            </li>
-        {% endfor %}
-    </ul>
-<h1>Energy Spread: </h1>
-    <ul>
-        {% for result in energy_spread_results %}
-            <li>
-                {{ result }}
-            </li>
-        {% endfor %}
-    </ul>
+<div class="container" style="padding-top: 100px">
+    <h1 class="text-center">Here are your results!</h1>
+    <div style="padding-top: 75px">
+
+    </div>
+    <div class="row">
+
+        <div class="col-md-6 col-sm-12">
+            <h2>Union Colors: </h2>
+            <ul>
+                {% for result in union_colors_results %}
+                    <li>
+                        {{ result }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h2>Energy Spread: </h2>
+            <ul>
+                {% for result in energy_spread_results %}
+                    <li>
+                        {{ result }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {#        {% buttons %}#}
+        {#        {% endbuttons %}#}
+    </div>
+    <div style="padding-top: 100px">
+
+    </div>
+    <div class="text-left">
+        <a href="{% url 'home' %}">
+            <button class="btn btn-primary">Reset</button>
+        </a>
+    </div>
+</div>
 </body>
 </html>

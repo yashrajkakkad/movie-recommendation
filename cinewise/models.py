@@ -10,7 +10,10 @@ class Node(models.Model):
 
 
 class UserInput(models.Model):
-    nodes = models.ManyToManyField(Node)
+    nodes = models.ManyToManyField(Node,null=True,blank=True)
+
+    def __str__(self):
+        return self.nodes.all()[0].name
 
 # class Person(models.Model):
 #     name = models.CharField(max_length=100)
