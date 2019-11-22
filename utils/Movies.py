@@ -121,6 +121,7 @@ def get_movies_data():
 
 
 def load_movies_data():
+    movies = []
     with open("movies.pickle", "rb") as f:
         while True:
             try:
