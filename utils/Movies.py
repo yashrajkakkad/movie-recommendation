@@ -5,8 +5,8 @@ import pickle
 from bs4 import BeautifulSoup
 
 DATAPATH = 'ml-latest-small/movies.csv'
-FILEPATH = 'imdb_movies.txt'
-APIKEY = 'c98acb7f'
+FILEPATH = 'movies.txt'
+APIKEY = 'd126d65e'
 APIKEYS = ['aa03d634', 'd126d65e', '8e43ce79', '6fce15a', 'efab5d4d', 'c98acb7f']
 
 
@@ -46,7 +46,10 @@ def get_movies_data():
         data = f.read()
     movies = data.split('\n')
     regex = re.compile(r'(.*)?\(.*?\)')
-    movies_obj = load_movies_data()
+    try:
+        movies_obj = load_movies_data()
+    except FileNotFoundError:
+        movies_obj = []
     movie_titles = [movie.title for movie in movies_obj]
     exit = False
     left_movies = []
@@ -238,10 +241,11 @@ def get_movies_cinestaan():
 
 
 if __name__ == "__main__":
-    pass
+    # read_movies_dataset()
+    # pass
     # movies_to_nodes()
     # read_movies()
-    # get_movies_data()
+    get_movies_data()
     # get_movies_imdb()
     # get_movies_tmdb()
     # get_movies_cinestaan()
