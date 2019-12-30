@@ -26,7 +26,7 @@ SECRET_KEY = '!e_@1-%lz+v+u5y$hdndg5w17wgatlu1443dty%wcmmo&47rlj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '192.241.249.93']
+ALLOWED_HOSTS = ['localhost', 'cinewise.yashrajkakkad.me']
 
 # Application definition
 
