@@ -8,4 +8,6 @@ ml-latest-small
 __pycache__
 *.pyc
 .env
-
+db.sqlite3
+ml_data
+utils/movies.txt
