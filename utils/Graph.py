@@ -189,10 +189,10 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = neighbor_energy_values[neighbor]
                     neighbor_energy_values[neighbor] = energy_value + \
-                        (energy_values[parent[node]] / len(graph[node]))
+                                                       (energy_values[parent[node]] / len(graph[node]))
                 except KeyError:
                     neighbor_energy_values[neighbor] = (
-                        energy_values[parent[node]] / len(graph[node]))
+                            energy_values[parent[node]] / len(graph[node]))
     final_energy_values = {}  # Energy values of neighbor movies
     for node in queue:
         for neighbor in graph[node]:
@@ -201,10 +201,10 @@ def energy_spread(graph, nodes):
                 try:  # Add new energy value if already exists
                     energy_value = final_energy_values[neighbor]
                     final_energy_values[neighbor] = energy_value + \
-                        (neighbor_energy_values[node] / len(graph[node]))
+                                                    (neighbor_energy_values[node] / len(graph[node]))
                 except KeyError:
                     final_energy_values[neighbor] = neighbor_energy_values[node] / \
-                        len(graph[node])
+                                                    len(graph[node])
     sorted_values = OrderedDict(sorted(final_energy_values.items(),  # Sort using OrderedDict to maintain order
                                        key=itemgetter(1)))
     for node in nodes:
@@ -241,3 +241,7 @@ def gen_recommendations(nodes):
             break
 
     return union_colors_results, energy_spread_results
+
+
+if __name__ == "__main__":
+    create_graph()

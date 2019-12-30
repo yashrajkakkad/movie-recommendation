@@ -3,11 +3,11 @@ import requests
 import re
 import pickle
 from bs4 import BeautifulSoup
+from decouple import config
 
 DATAPATH = 'ml-latest-small/movies.csv'
 FILEPATH = 'movies.txt'
-APIKEY = 'd126d65e'
-APIKEYS = ['aa03d634', 'd126d65e', '8e43ce79', '6fce15a', 'efab5d4d', 'c98acb7f']
+APIKEY = config('APIKEY')
 
 
 class Movie:
@@ -141,6 +141,7 @@ def movies_to_nodes():
     movies = load_movies_data()
     nodes = []
     for movie in movies:
+        # print(movies[0])
         nodes.append(movie.title)
         for person in movie.people:
             if person not in nodes:
@@ -150,7 +151,7 @@ def movies_to_nodes():
                 nodes.append(genre)
     with open("nodes.pickle", "wb") as f:
         pickle.dump(nodes, f)
-    # return nodes
+    return nodes
 
 
 def load_nodes():
@@ -241,11 +242,12 @@ def get_movies_cinestaan():
 
 
 if __name__ == "__main__":
+    pass
     # read_movies_dataset()
     # pass
     # movies_to_nodes()
     # read_movies()
-    get_movies_data()
+    # get_movies_data()
     # get_movies_imdb()
     # get_movies_tmdb()
     # get_movies_cinestaan()
