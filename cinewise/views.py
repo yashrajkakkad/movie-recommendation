@@ -39,5 +39,5 @@ class NodeAutocomplete(autocomplete.Select2QuerySetView):
         #     return Node.objects.none()
         qs = Node.objects.all()
         if self.q:
-            qs = qs.filter(name__contains=self.q)
+            qs = qs.filter(name__icontains=self.q)
         return qs
