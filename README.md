@@ -2,6 +2,7 @@
 
 Recommend movies based on user's preferred movies, genres, actors, directors and storywriters. **[Click here](http://cinewise.yashrajkakkad.me/) to see it in action.**
 
+![Preview](https://github.com/yashrajkakkad/movie-recommendation/blob/master/preview.png?raw=true)
 
 This project implements the first two algorithms [from a research paper](https://ieeexplore.ieee.org/document/6621363) published in IEEE Xplore:
 - Union Colors - a combination of multisource 'breadth first search' (BFS) and union-find data structure.
