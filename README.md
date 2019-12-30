@@ -12,18 +12,19 @@ The explanation for these algorithms can be found in the paper. Credits for the 
 
 We have created a Django application around the algorithm for a smooth experience. Bootstrap is used for creating a simple yet elegant frontpage.
 
-# The Graph
+## The Graph
 The graph has movie titles, genres and the assoicated directors, actors and story writers as the vertices. These vertices are mutually connected for every movie.
 
-# OMDB API
+## OMDB API
 We used [OMDB API](http://www.omdbapi.com/) to obtain movie information and create a graph around it. The data is stored using serialization. (movies.pickle, node.pickle and graph.pickle)
 
-# Configuration
+## Configuration
 You need to manually add the movie attributes in the database for autocompletion. Rest of the steps are the same as any other Django project.
 
 - Clone this repository
 ```sh
 git clone https://github.com/yashrajkakkad/movie-recommendation.git
+cd movie-recommendation
 ```
 - Install the required packages. Using a virtual environment is recommended.
 ```sh
