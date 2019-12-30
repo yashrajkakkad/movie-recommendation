@@ -11,3 +11,4 @@ __pycache__
 db.sqlite3
 ml_data
 utils/movies.txt
+static/

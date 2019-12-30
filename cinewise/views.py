@@ -33,14 +33,6 @@ def home(request):
         return render(request, 'cinewise/index.html', {'form': form})
 
 
-def refreshnodes(request):
-    nodes = load_nodes()
-    Node.objects.all().delete()
-    for node in nodes:
-        node_model = Node(name=node)
-        node_model.save()
-
-
 class NodeAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # if not self.request.user.is_authenticated:
