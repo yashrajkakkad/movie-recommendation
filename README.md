@@ -1,6 +1,6 @@
 # Cinewise - Movie Recommendation Using Graph Theory
 
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Presto-Chango"> <img alt="PyPI - Django Version" src="https://img.shields.io/pypi/djversions/drf-yasg-edge"> <img alt="PyPI - License" src="https://img.shields.io/pypi/l/Presto-Chango">
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/Presto-Chango"> <img alt="PyPI - Django Version" src="https://camo.githubusercontent.com/f5c59809fc4f0316f011de93c19a513853bec99b/68747470733a2f2f696d672e736869656c64732e696f2f707970692f646a76657273696f6e732f6472662d796173672d65646765"> <img alt="PyPI - License" src="https://img.shields.io/pypi/l/Presto-Chango">
 
 
 Recommend movies based on user's preferred movies, genres, actors, directors and storywriters. **[Click here](http://cinewise.yashrajkakkad.me/) to see it in action.**
