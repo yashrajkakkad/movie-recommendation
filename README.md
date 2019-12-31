@@ -45,9 +45,9 @@ DEBUG=''
 ```
 - If you're not going to use a PostgreSQL database, change the DATABASES variable in mysite/settings.py accordingly. Refer [Django documentation](https://docs.djangoproject.com/en/3.0/ref/databases/) for that. 
 
-- If you're going to play with movie related information, you can obtain your API key from OMDB website here. Otherwise keep it blank.
+- If you're going to play with movie related information, you can obtain your API key from OMDB website [here](https://www.omdbapi.com/apikey.aspx). Otherwise keep it blank.
 
-- DEBUG= True for development and False for production.
+- `DEBUG=True` for development and `False` for production.
 
 - Make the initial migrations
 ```sh
